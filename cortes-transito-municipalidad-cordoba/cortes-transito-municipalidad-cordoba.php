@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Buscador de Cortes de Tr&aacute;nsito de la Municipalidad de C&oacute;rdoba
-Plugin URI: https://github.com/florenperetti/wp-cortes-transito-municipalidad-cordoba
+Plugin URI: https://github.com/ModernizacionMuniCBA/plugin-wordpress-cortes-transito-municipales
 Description: Este plugin a&ntilde;ade un shortcode que genera un buscador de cortes de tr&aacute;nsito en la ciudad de C&oacute;rdoba, y un scroller que muestra los cortes actuales.
 Version: 1.1.8
 Author: Florencia Peretti
@@ -271,14 +271,15 @@ class CortesTransitoMuniCordoba
 	{
 	    $atributos = array_change_key_case((array)$atributos, CASE_LOWER);
 	    $atr = shortcode_atts([
-            'pag' => 10
+            'pag' => 10,
+            'query' => ''
         ], $atributos, $tag);
 
 	    $cantidad_por_pagina = $atr['pag'] == 0 ? '' : '?page_size='.$atr['pag'];
+	    $filtro_query = trim($atr['query']) == '' ? '' : '&q='.trim($atr['query']);
 
-	    $url = self::$URL_API_GOB.$cantidad_por_pagina;
-
-    	$api_response = wp_remote_get($url);
+	    $url = self::$URL_API_GOB.$cantidad_por_pagina.$filtro_query;
+	   	$api_response = wp_remote_get($url);
 
     	$resultado = $this->chequear_respuesta($api_response, 'los cortes de tr&aacute;nsito', 'cortes_transito_muni_cba');
 
